@@ -1,16 +1,2406 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Дело // Online</title><style>
-:root{--bg:#0c1210;--panel:#15201d;--panel2:#1c2a26;--line:#30443e;--text:#edf4f1;--muted:#a3b5af;--a:#61d0bd;--danger:#e4788d;--warn:#e1af6d}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px Inter,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.top{height:66px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#0a100e}.brand{font-weight:900;letter-spacing:.05em}.online{color:var(--a);font-size:13px}.landing{max-width:1180px;margin:auto;padding:70px 5vw;display:grid;grid-template-columns:1fr 430px;gap:60px}.eyebrow,.label{color:var(--a);font-size:12px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.landing h1{font-size:clamp(42px,6vw,72px);line-height:.98;margin:18px 0;max-width:600px}.muted{color:var(--muted);line-height:1.55}.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#0d1512;padding:6px;border-radius:13px;margin-bottom:18px}.tabs button,.nav button{border:0;background:transparent;color:var(--muted);border-radius:10px;padding:12px;font-weight:700}.tabs button.active,.nav button.active{background:var(--panel2);color:var(--text)}.form{display:none}.form.active{display:block}.field{display:grid;gap:7px;margin-bottom:14px}.field label{font-size:12px;text-transform:uppercase;font-weight:800;letter-spacing:.06em;color:var(--muted)}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:10px;background:#0e1714;color:var(--text);padding:12px}textarea{min-height:110px;resize:vertical}.btn{border:0;border-radius:10px;padding:13px 16px;font-weight:800}.primary{background:var(--a);color:#06221d}.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}.danger{background:var(--danger);color:#26070d}.shell{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 66px)}aside{padding:18px;border-right:1px solid var(--line);background:#101815}.code{font-size:26px;letter-spacing:.12em;font-weight:900;margin:7px 0 14px}.nav{display:grid;gap:5px;margin-top:18px}.nav button{text-align:left}.main{padding:28px;max-width:1100px;width:100%;margin:auto}.head{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:20px}.head h1{margin:0;font-size:32px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.chars{display:grid;grid-template-columns:180px 1fr;gap:15px}.charlist{display:grid;gap:7px}.charlist button{text-align:left}.notice{padding:14px;border-radius:12px;background:#403022;color:#f5debf;margin-bottom:15px}.facts{display:grid;gap:10px}.fact{display:flex;gap:10px;align-items:center}.fact input{flex:1}.player{padding:11px;border:1px solid var(--line);border-radius:10px;margin-top:9px;display:flex;justify-content:space-between;gap:12px}.role{color:var(--a);font-size:12px;text-transform:uppercase;font-weight:800}.waiting{max-width:600px;margin:13vh auto;padding:36px;text-align:center}.callgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.call{padding:16px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;text-align:left}.call:hover{border-color:var(--a)}.hidden{display:none!important}.toast{position:fixed;right:20px;bottom:20px;background:var(--panel2);border:1px solid var(--line);padding:14px;border-radius:12px;display:none;max-width:400px}.toast.show{display:block}@media(max-width:800px){.landing,.shell,.grid2,.chars{grid-template-columns:1fr}.landing{padding-top:35px;gap:28px}.shell aside{border-right:0;border-bottom:1px solid var(--line)}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.main{padding:18px}.callgrid{grid-template-columns:1fr}}
-</style></head><body><header class="top"><div class="brand">ДЕЛО // ONLINE</div><div id="status" class="online">Подключение…</div></header><div id="app"></div><div id="toast" class="toast"></div>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Дело // Online</title>
+  <style>
+    :root{
+      --bg:#0c1210;
+      --panel:#15201d;
+      --panel2:#1c2a26;
+      --panel3:#101815;
+      --line:#30443e;
+      --text:#edf4f1;
+      --muted:#a3b5af;
+      --accent:#61d0bd;
+      --accent-dark:#06221d;
+      --danger:#e4788d;
+      --warning:#e1af6d;
+      --warning-bg:#403022;
+      --success:#86e6b5;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-width:320px;
+      background:var(--bg);
+      color:var(--text);
+      font:16px Inter,Arial,sans-serif;
+    }
+
+    button,input,textarea,select{font:inherit}
+
+    button{cursor:pointer}
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    h1,h2,h3,p{margin-top:0}
+
+    .top{
+      height:66px;
+      padding:0 5vw;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      border-bottom:1px solid var(--line);
+      background:#0a100e;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .brand{
+      font-weight:900;
+      letter-spacing:.05em;
+      white-space:nowrap;
+    }
+
+    .online{
+      color:var(--accent);
+      font-size:13px;
+      text-align:right;
+    }
+
+    .landing{
+      max-width:1180px;
+      margin:auto;
+      padding:70px 5vw;
+      display:grid;
+      grid-template-columns:1fr 430px;
+      gap:60px;
+    }
+
+    .eyebrow,.label,.role{
+      color:var(--accent);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+
+    .landing h1{
+      max-width:650px;
+      margin:18px 0;
+      font-size:clamp(42px,6vw,72px);
+      line-height:.98;
+    }
+
+    .muted{
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .panel,.card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+    }
+
+    .card{
+      margin-bottom:16px;
+    }
+
+    .tabs{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+      margin-bottom:18px;
+      padding:6px;
+      border-radius:13px;
+      background:#0d1512;
+    }
+
+    .tabs button,.nav button{
+      border:0;
+      border-radius:10px;
+      padding:12px;
+      background:transparent;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .tabs button.active,.nav button.active{
+      background:var(--panel2);
+      color:var(--text);
+    }
+
+    .form{display:none}
+    .form.active{display:block}
+
+    .field{
+      display:grid;
+      gap:7px;
+      margin-bottom:14px;
+    }
+
+    .field label{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    input,textarea,select{
+      width:100%;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      outline:0;
+      background:#0e1714;
+      color:var(--text);
+    }
+
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(Твои новые Rules и текущий `index-2.html` сейчас **несовместимы**: сайт продолжает работать со старой плоской структурой (`hostUid`, `players`, `caseData`, `truth`), а Rules ожидают разделение на `participants`, `public`, `hostPrivate`, `playerPrivate` и `detectivePrivate`. Поэтому текущая версия после публикации новых правил не сможет ни корректно создать комнату, ни безопасно читать данные.
+
+Ниже — готовый полный `index.html` для замены. Он работает с уже вставленными тобой Rules и реализует игровую логику:
+
+- ведущий создаёт комнату и сразу начинает подготовку;
+- детектив подключается по коду и ждёт ручного старта;
+- игроки входят независимо от старта;
+- ведущий создаёт персонажей, задаёт истину и назначает игроков;
+- персонаж получает только свою карточку;
+- если персонаж — убийца, он получает мотив и способ;
+- детектив получает только открытую часть дела, подозреваемых, раскрытые факты и свои приватные заметки;
+- детектив может отправить строго одно обвинение;
+- ведущий видит обвинение, завершает допросы, раскрывает факты и показывает развязку;
+- открытая часть, истина, приватные карточки и обвинение хранятся раздельно.
+
+Заменяй содержимое файла `index.html` в репозитории GitHub Pages полностью этим кодом.
+
+```html
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Дело // Online</title>
+  <style>
+    :root{
+      --bg:#0c1210;
+      --panel:#15201d;
+      --panel2:#1c2a26;
+      --line:#30443e;
+      --text:#edf4f1;
+      --muted:#a3b5af;
+      --a:#61d0bd;
+      --danger:#e4788d;
+      --warn:#e1af6d;
+      --good:#87dca9;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px Inter,Arial,sans-serif;
+    }
+
+    button,input,textarea,select{font:inherit}
+
+    button{cursor:pointer}
+
+    button:disabled{
+      cursor:not-allowed;
+      opacity:.55;
+    }
+
+    .top{
+      height:66px;
+      padding:0 5vw;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      background:#0a100e;
+      position:sticky;
+      top:0;
+      z-index:20;
+    }
+
+    .brand{
+      font-weight:900;
+      letter-spacing:.05em;
+    }
+
+    .online{
+      color:var(--a);
+      font-size:13px;
+    }
+
+    .landing{
+      max-width:1180px;
+      margin:auto;
+      padding:70px 5vw;
+      display:grid;
+      grid-template-columns:1fr 430px;
+      gap:60px;
+    }
+
+    .eyebrow,.label{
+      color:var(--a);
+      font-size:12Прочитал код. Теперь понятно, почему после вставки новых Rules текущая версия перестала соответствовать базе: `index-2.html` использует старую структуру `rooms/{code}`, а новые правила, которые ты вставил, рассчитаны на другую структуру — с `public`, `hostPrivate`, `participants`, `playerPrivate` и `detectivePrivate`.[1]
+
+Есть и вторая проблема: текущий код содержит несколько ошибок, из-за которых даже со старыми правилами игровая логика работает нестабильно.
+
+## Что сейчас не совпадает
+
+### 1. Несовпадение структуры базы
+
+Текущий сайт создаёт комнату так:
+
+```text
+rooms/{code}
+├─ hostUid
+├─ maxPlayers
+├─ phase
+├─ detectiveUid
+├─ players
+├─ caseData
+├─ characters
+├─ truth
+├─ revealed
+├─ activeInterrogation
+└─ accusation
+```
+
+А вставленные Rules ожидают:
+
+```text
+rooms/{code}
+├─ public
+├─ participants
+├─ hostPrivate
+├─ playerPrivate
+└─ detectivePrivate
+```
+
+Поэтому текущие операции больше не могут нормально работать:
+
+```js
+set(ref(db, 'rooms/' + code), defaults(n, m))
+```
+
+создаёт старую структуру, а Rules проверяют наличие:
+
+```json
+rooms/{roomCode}/hostPrivate/hostUid
+rooms/{roomCode}/participants/{uid}
+```
+
+Их там нет.
+
+### 2. Ведущий определяется неправильно
+
+В коде:
+
+```js
+function isHost() {
+  return room?.hostUid === me?.uid;
+}
+```
+
+Это работает только для старой структуры. Для новой нужно проверять:
+
+```js
+room?.hostPrivate?.hostUid === me?.uid
+```
+
+### 3. Вход детектива и игрока использует старые пути
+
+Сейчас:
+
+```js
+runTransaction(ref(db, 'rooms/' + c + '/detectiveUid'), ...)
+update(ref(db, 'rooms/' + c + '/players/' + me.uid), ...)
+```
+
+В новой модели должно быть:
+
+```text
+rooms/{code}/participants/{uid}
+```
+
+А наличие детектива определяется по роли участника, а не отдельным `detectiveUid`.
+
+### 4. Приватные данные сейчас доступны всей комнате
+
+В текущем коде детектив получает весь объект:
+
+```js
+onValue(ref(db, 'rooms/' + code), s => {
+Принял. `index-2.html` — это последняя рабочая Firebase-версия, и именно её нужно развивать. В текущем коде Firebase действительно уже подключён, но после вставки новых Rules сайт нужно привести к новой структуре данных: сейчас HTML использует старые пути `players`, `caseData`, `characters`, `truth`, `revealed`, `activeInterrogation`, `accusation`, а опубликованные правила ожидают `public`, `hostPrivate`, `playerPrivate`, `detectivePrivate`, `participants`. Из-за этого часть операций уже должна блокироваться правилами.
+
+Ниже даю **полный обновлённый `index.html`**, который сохраняет Firebase и текущую механику входа, но переводит сайт на безопасную структуру и прорабатывает игровой цикл:
+
+- ведущий создаёт комнату и сразу готовит дело;
+- детектив входит отдельно и ждёт запуска;
+- ведущий видит участников;
+- ведущий создаёт и редактирует персонажей;
+- ведущий назначает персонажей игрокам;
+- секреты и истина находятся в приватной зоне ведущего;
+- детектив получает только публичное дело и открытые факты;
+- игрок получает только свою карточку;
+- ведущий вручную запускает расследование;
+- детектив вызывает персонажа на допрос;
+- ведущий завершает допрос;
+- ведущий выдаёт факты;
+- детектив делает только одно обвинение;
+- ведущий видит обвинение и открывает развязку.
+
+> Важный момент: в правилах, которые ты вставил ранее, есть логическое противоречие для чтения публичной комнаты: верхний `.read` требует наличие `participants/{uid}`, но при первоначальном создании комнаты `participants` ещё не создаётся в новой структуре. В коде ниже это исправлено: комната создаётся сразу с `participants`, `public` и `hostPrivate`.
+
+## Полный `index.html`
+
+```html
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дело // Online</title>
+
+<style>
+:root{
+  --bg:#0c1210;
+  --panel:#15201d;
+  --panel2:#1c2a26;
+  --line:#30443e;
+  --text:#edf4f1;
+  --muted:#a3b5af;
+  --a:#61d0bd;
+  --danger:#e4788d;
+  --warn:#e1af6d;
+  --good:#8bd49b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:16px Inter,Arial,sans-serif
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.5}
+.top{
+  height:66px;
+  padding:0 5vw;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  background:#0a100e
+}
+.brand{font-weight:900;letter-spacing:.05em}
+.online{color:var(--a);font-size:13px}
+.landing{
+  max-width:1180px;
+  margin:auto;
+  padding:70px 5vw;
+  display:grid;
+  grid-template-columns:1fr 430px;
+  gap:60px
+}
+.eyebrow,.label{
+  color:var(--a);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.11em;
+  text-transform:uppercase
+}
+.landing h1{
+  font-size:clamp(42px,6vw,72px);
+  line-height:.98;
+  margin:18px 0;
+  max-width:600px
+}
+.muted{color:var(--muted);line-height:1.55}
+.panel,.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px
+}
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  background:#0d1512;
+  padding:6px;
+  border-radius:13px;
+  margin-bottom:18px
+}
+.tabs button,.nav button{
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  border-radius:10px;
+  padding:12px;
+  font-weight:700
+}
+.tabs button.active,.nav button.active{
+  background:var(--panel2);
+  color:var(--text)
+}
+.form{display:none}
+.form.active{display:block}
+.field{
+  display:grid;
+  gap:7px;
+  margin-bottom:14px
+}
+.field label{
+  font-size:12px;
+  text-transform:uppercase;
+  font-weight:800;
+  letter-spacing:.06em;
+  color:var(--muted)
+}
+input,textarea,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#0e1714;
+  color:var(--text);
+  padding:12px
+}
+textarea{
+  min-height:110px;
+  resize:vertical
+}
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:13px 16px;
+  font-weight:800
+}
+.primary{background:var(--a);color:#06221d}
+.secondary{
+  background:var(--panel2);
+  color:var(--text);
+  border:1px solid var(--line)
+}
+.danger{background:var(--danger);color:#26070d}
+.warning{background:var(--warn);color:#291b08}
+.good{background:var(--good);color:#092314}
+.shell{
+  display:grid;
+  grid-template-columns:250px 1fr;
+  min-height:calc(100vh - 66px)
+}
+aside{
+  padding:18px;
+  border-right:1px solid var(--line);
+  background:#101815
+}
+.code{
+  font-size:26px;
+  letter-spacing:.12em;
+  font-weight:900;
+  margin:7px 0 14px
+}
+.nav{
+  display:grid;
+  gap:5px;
+  margin-top:18px
+}
+.nav button{text-align:left}
+.main{
+  padding:28px;
+  max-width:1200px;
+  width:100%;
+  margin:auto
+}
+.head{
+  display:flex;
+  align-items:start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:20px
+}
+.head h1{margin:0;font-size:32px}
+.grid2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px
+}
+.grid3{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px
+}
+.chars{
+  display:grid;
+  grid-template-columns:210px 1fr;
+  gap:15px
+}
+.charlist{display:grid;gap:7px}
+.charlist button{text-align:left}
+.notice{
+  padding:14px;
+  border-radius:12px;
+  background:#403022;
+  color:#f5debf;
+  margin-bottom:15px
+}
+.notice.good{
+  background:#1c3a29;
+  color:#c8f2d0
+}
+.notice.danger{
+  background:#3d1d27;
+  color:#ffd3dc
+}
+.facts{display:grid;gap:10px}
+.fact{
+  display:flex;
+  gap:10px;
+  align-items:center
+}
+.fact input{flex:1}
+.player{
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  margin-top:9px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center
+}
+.role{
+  color:var(--a);
+  font-size:12px;
+  text-transform:uppercase;
+  font-weight:800
+}
+.waiting{
+  max-width:600px;
+  margin:13vh auto;
+  padding:36px;
+  text-align:center
+}
+.callgrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px
+}
+.call{
+  padding:16px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--text);
+  border-radius:12px;
+  text-align:left
+}
+.call:hover{border-color:var(--a)}
+.hidden{display:none!important}
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  padding:14px;
+  border-radius:12px;
+  display:none;
+  max-width:400px;
+  z-index:10
+}
+.toast.show{display:block}
+.small{font-size:13px}
+.sep{
+  height:1px;
+  background:var(--line);
+  margin:18px 0
+}
+.stat{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:15px;
+  background:#101815
+}
+.stat strong{
+  display:block;
+  font-size:24px;
+  margin-top:5px
+}
+.inline{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap
+}
+.preview{
+  background:#0b120f;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  padding:15px
+}
+details summary{
+  cursor:pointer;
+  color:var(--a);
+  font-weight:800
+}
+@media(max-width:900px){
+  .landing,.shell,.grid2,.grid3,.chars{
+    grid-template-columns:1fr
+  }
+  .landing{
+    padding-top:35px;
+    gap:28px
+  }
+  .shell aside{
+    border-right:0;
+    border-bottom:1px solid var(--line)
+  }
+  .nav{
+    display:flex;
+    overflow:auto
+  }
+  .nav button{white-space:nowrap}
+  .main{padding:18px}
+}
+@media(max-width:600px){
+  .callgrid{grid-template-columns:1fr}
+  .head{display:block}
+  .head>*+*{margin-top:14px}
+}
+</style>
+</head>
+
+<body>
+<header class="top">
+  <div class="brand">ДЕЛО // ONLINE</div>
+  <div id="status" class="online">Подключение…</div>
+</header>
+
+<div id="app"></div>
+<div id="toast" class="toast"></div>
+
 <script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js';import{getAuth,signInAnonymously}from'https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js';import{getDatabase,ref,get,set,update,onValue,runTransaction}from'https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js';
-const cfg={apiKey:'AIzaSyCxpowPqAwwtEVzxdyk1nVAzZ2HJKSJH1Q',authDomain:'delo-1b821.firebaseapp.com',databaseURL:'https://delo-1b821-default-rtdb.europe-west1.firebasedatabase.app',projectId:'delo-1b821',storageBucket:'delo-1b821.firebasestorage.app',messagingSenderId:'438900845008',appId:'1:438900845008:web:e308c6cf469f53593231d5'};const app=initializeApp(cfg),auth=getAuth(app),db=getDatabase(app);let me,room,code,tab='case',editChar=0,unsub;
-const $=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function toast(x){$('toast').textContent=x;$('toast').classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>$('toast').classList.remove('show'),3500)}function gen(){let s='',a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';for(let i=0;i<6;i++)s+=a[Math.floor(Math.random()*a.length)];return s}function defaults(name,max){return{hostUid:me.uid,maxPlayers:max,phase:'setup',createdAt:Date.now(),detectiveUid:null,players:{[me.uid]:{uid:me.uid,name,role:'host',joinedAt:Date.now()}},caseData:{title:'Новое дело',victim:'',incident:'',intro:'',location:''},characters:[{name:'Подозреваемый 1',occupation:'',archetype:'',relation:'',secret:'',goal:''},{name:'Подозреваемый 2',occupation:'',archetype:'',relation:'',secret:'',goal:''},{name:'Подозреваемый 3',occupation:'',archetype:'',relation:'',secret:'',goal:''}],truth:{killer:0,motive:'',method:'',chronology:'',facts:['','','','','','']},revealed:{},activeInterrogation:null,accusation:null}}async function authgo(){if(auth.currentUser)return auth.currentUser;return(await signInAnonymously(auth)).user}function landing(){ $('app').innerHTML=`<main class="landing"><section><div class="eyebrow">Устный детектив для Discord</div><h1>Создай дело. Запусти расследование.</h1><p class="muted">Ведущий создаёт комнату и сразу готовит дело. Детектив подключается позднее по коду. Дополнительные игроки могут зайти в любой момент.</p></section><section class="panel"><div class="tabs"><button class="active" data-t="host">Я ведущий</button><button data-t="detective">Я детектив</button><button data-t="player">Я игрок</button></div><div id="f-host" class="form active"><div class="field"><label>Имя ведущего</label><input id="hn" placeholder="Дмитрий"></div><div class="field"><label>Игроков без ведущего</label><select id="hm"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option></select></div><button id="create" class="btn primary">Создать дело</button></div><div id="f-detective" class="form"><div class="field"><label>Имя детектива</label><input id="dn"></div><div class="field"><label>Код комнаты</label><input id="dc"></div><button id="jd" class="btn primary">Войти как детектив</button></div><div id="f-player" class="form"><div class="field"><label>Имя игрока</label><input id="pn"></div><div class="field"><label>Код комнаты</label><input id="pc"></div><button id="jp" class="btn primary">Войти как игрок</button></div></section></main>`;document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-t]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.form').forEach(x=>x.classList.remove('active'));$('f-'+b.dataset.t).classList.add('active')});$('create').onclick=create;$('jd').onclick=()=>join('detective');$('jp').onclick=()=>join('player')}
-async function create(){let n=$('hn').value.trim(),m=+$('hm').value;if(!n)return toast('Введи имя ведущего.');await authgo();for(let i=0;i<10;i++){code=gen();if(!(await get(ref(db,'rooms/'+code))).exists())break}await set(ref(db,'rooms/'+code),defaults(n,m));subscribe();tab='case';render()}
-async function join(role){let n=$(role==='detective'?'dn':'pn').value.trim(),c=$(role==='detective'?'dc':'pc').value.trim().toUpperCase();if(!n||!c)return toast('Введи имя и код комнаты.');await authgo();let rr=ref(db,'rooms/'+c),s=await get(rr);if(!s.exists())return toast('Комната не найдена.');if(role==='detective'){let r=await runTransaction(ref(db,'rooms/'+c+'/detectiveUid'),v=>v===null?me.uid:undefined);if(!r.committed)return toast('Детектив уже занят.')}await update(ref(db,'rooms/'+c+'/players/'+me.uid),{uid:me.uid,name:n,role,joinedAt:Date.now()});code=c;subscribe();render()}
-function subscribe(){unsub?.();unsub=onValue(ref(db,'rooms/'+code),s=>{room=s.val();if(room)render()})}function isHost(){return room?.hostUid===me?.uid}function save(path,v){return update(ref(db,'rooms/'+code+'/'+path),v)}function nav(){return `<aside><div class="label">Код комнаты</div><div class="code">${code}</div><button id="copy" class="btn secondary">Скопировать код</button><nav class="nav">${[['case','Дело'],['characters','Персонажи'],['truth','Истина'],['lobby','Лобби'],['game','Игра']].map(x=>`<button data-nav="${x[0]}" class="${tab===x[0]?'active':''}">${x[1]}</button>`).join('')}</nav></aside>`}function render(){if(!room)return; if(!isHost())return guest();$('app').innerHTML=`<div class="shell">${nav()}<main class="main">${hostPage()}</main></div>`;$('copy').onclick=()=>navigator.clipboard.writeText(code).then(()=>toast('Код скопирован.'));document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>{tab=b.dataset.nav;render()});bindHost()}
-function hostPage(){if(tab==='case')return casePage();if(tab==='characters')return charsPage();if(tab==='truth')return truthPage();if(tab==='lobby')return lobbyPage();return gamePage()}function casePage(){let c=room.caseData;return `<div class="head"><div><h1>Дело</h1><p class="muted">Заполни основу истории. Детектив её увидит только после запуска.</p></div></div><form id="casef" class="card"><div class="grid2"><div class="field"><label>Название дела</label><input name="title" value="${esc(c.title)}"></div><div class="field"><label>Жертва</label><input name="victim" value="${esc(c.victim)}"></div><div class="field"><label>Инцидент</label><input name="incident" value="${esc(c.incident)}"></div><div class="field"><label>Локация</label><input name="location" value="${esc(c.location)}"></div></div><div class="field"><label>Вводная для детектива</label><textarea name="intro">${esc(c.intro)}</textarea></div><button class="btn primary">Сохранить дело</button></form>`}function charsPage(){let c=room.characters[editChar]||room.characters[0];return `<div class="head"><div><h1>Персонажи</h1><p class="muted">Это приватные данные ведущего. Игрок получит свою карточку после назначения.</p></div><button id="addchar" class="btn secondary">+ Персонаж</button></div><div class="chars"><div class="charlist">${room.characters.map((x,i)=>`<button data-char="${i}" class="btn ${i===editChar?'primary':'secondary'}">${esc(x.name||'Без имени')}</button>`).join('')}</div><form id="charf" class="card"><div class="grid2"><div class="field"><label>Имя</label><input name="name" value="${esc(c.name)}"></div><div class="field"><label>Роль / профессия</label><input name="occupation" value="${esc(c.occupation)}"></div><div class="field"><label>Архетип</label><input name="archetype" value="${esc(c.archetype)}" placeholder="Например: нарцисс"></div><div class="field"><label>Связь</label><input name="relation" value="${esc(c.relation)}"></div></div><div class="field"><label>Секрет</label><textarea name="secret">${esc(c.secret)}</textarea></div><div class="field"><label>Личная цель</label><textarea name="goal">${esc(c.goal)}</textarea></div><button class="btn primary">Сохранить персонажа</button></form></div>`}function truthPage(){let t=room.truth;return `<div class="head"><div><h1>Истина дела</h1><p class="muted">Это видишь только ты. Не открывай экран при детективе.</p></div></div><div class="notice">Убийца, мотив, способ и факты не должны быть доступны гостям до развязки.</div><form id="truthf" class="card"><div class="grid2"><div class="field"><label>Убийца</label><select name="killer">${room.characters.map((x,i)=>`<option value="${i}" ${+t.killer===i?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div><div class="field"><label>Мотив</label><input name="motive" value="${esc(t.motive)}"></div><div class="field"><label>Способ убийства</label><textarea name="method">${esc(t.method)}</textarea></div><div class="field"><label>Хронология</label><textarea name="chronology">${esc(t.chronology)}</textarea></div></div><div class="label">Факты дела — выдавай их вручную во время расследования</div><div class="facts">${t.facts.map((x,i)=>`<div class="fact"><b>${i+1}</b><input name="fact${i}" value="${esc(x)}"></div>`).join('')}</div><br><button class="btn primary">Сохранить истину</button></form>`}function lobbyPage(){let ps=Object.values(room.players||{});return `<div class="head"><div><h1>Лобби</h1><p class="muted">Ты можешь готовить дело независимо от того, кто уже подключился.</p></div></div><div class="card"><b>Участники</b>${ps.map(p=>`<div class="player"><span>${esc(p.name)}</span><span class="role">${p.role==='host'?'ведущий':p.role==='detective'?'детектив':'игрок'}</span></div>`).join('')}</div>`}function gamePage(){let t=room.truth,active=room.activeInterrogation;return `<div class="head"><div><h1>Игра</h1><p class="muted">Запуск доступен, когда дело готово. Детектив может зайти до или после запуска.</p></div>${room.phase==='setup'?'<button id="start" class="btn primary">Начать расследование</button>':'<span class="role">Расследование идёт</span>'}</div><div class="grid2"><section class="card"><h3>Допрос</h3>${active===null?'<p class="muted">Детектив пока никого не вызвал.</p>':`<p>Сейчас на допросе: <b>${esc(room.characters[active]?.name)}</b></p><button id="endcall" class="btn secondary">Закончить допрос</button>`}</section><section class="card"><h3>Факты</h3>${room.truth.facts.map((f,i)=>`<div class="player"><span>${esc(f||'Пустой факт')}</span><button class="btn secondary" data-fact="${i}" ${room.revealed?.[i]?'disabled':''}>${room.revealed?.[i]?'Выдан':'Выдать'}</button></div>`).join('')}</section></div>`}function bindHost(){if($('casef'))$('casef').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target);save('caseData',{title:f.get('title'),victim:f.get('victim'),incident:f.get('incident'),location:f.get('location'),intro:f.get('intro')}).then(()=>toast('Дело сохранено.'))};document.querySelectorAll('[data-char]').forEach(b=>b.onclick=()=>{editChar=+b.dataset.char;render()});if($('addchar'))$('addchar').onclick=()=>{let a=[...room.characters,{name:'Новый персонаж',occupation:'',archetype:'',relation:'',secret:'',goal:''}];save('characters',a);editChar=a.length-1};if($('charf'))$('charf').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target),a=[...room.characters];a[editChar]={name:f.get('name'),occupation:f.get('occupation'),archetype:f.get('archetype'),relation:f.get('relation'),secret:f.get('secret'),goal:f.get('goal')};save('characters',a).then(()=>toast('Персонаж сохранён.'))};if($('truthf'))$('truthf').onsubmit=e=>{e.preventDefault();let f=new FormData(e.target),facts=room.truth.facts.map((_,i)=>f.get('fact'+i));save('truth',{killer:+f.get('killer'),motive:f.get('motive'),method:f.get('method'),chronology:f.get('chronology'),facts}).then(()=>toast('Истина сохранена.'))};if($('start'))$('start').onclick=()=>save('',{phase:'investigation'}).then(()=>toast('Расследование началось.'));if($('endcall'))$('endcall').onclick=()=>save('activeInterrogation',null);document.querySelectorAll('[data-fact]').forEach(b=>b.onclick=()=>save('revealed/'+b.dataset.fact,true))}
-function guest(){let p=room.players?.[me.uid],role=p?.role;if(role==='detective')return detective();if(role==='player')return player();$('app').innerHTML='<div class="waiting"><section class="panel"><h1>Подключение…</h1><p class="muted">Проверяем роль в комнате.</p></section></div>'}function detective(){if(room.phase!=='investigation'){$('app').innerHTML=`<div class="waiting"><section class="panel"><div class="label">Комната ${code}</div><h1>Дело ещё готовится</h1><p class="muted">Ведущий заполняет материалы. Он сам запустит расследование, когда скажет, что всё готово.</p></section></div>`;return}let c=room.caseData,revealed=Object.keys(room.revealed||{}).map(i=>room.truth.facts[i]).filter(Boolean);$('app').innerHTML=`<main class="main"><div class="head"><div><div class="label">Детектив</div><h1>${esc(c.title||'Дело')}</h1><p class="muted">${esc(c.intro)}</p></div><div class="role">Расследование</div></div><div class="grid2"><section class="card"><h3>Материалы дела</h3><p><b>Жертва:</b> ${esc(c.victim||'не указана')}</p><p><b>Инцидент:</b> ${esc(c.incident||'не указан')}</p><p><b>Локация:</b> ${esc(c.location||'не указана')}</p><h3>Вызвать на допрос</h3><div class="callgrid">${room.characters.map((x,i)=>`<button class="call" data-call="${i}"><b>${esc(x.name)}</b><br><span class="muted">${esc(x.occupation)}</span></button>`).join('')}</div></section><section class="card"><h3>Открытые факты</h3>${revealed.length?revealed.map(x=>`<p>• ${esc(x)}</p>`).join(''):'<p class="muted">Ведущий ещё не раскрыл факты.</p>'}<h3>Заметки</h3><textarea id="notes" placeholder="Твои личные заметки — не видны ведущему"></textarea><button id="accuse" class="btn danger">Финальное обвинение</button></section></div></main>`;document.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>save('activeInterrogation',+b.dataset.call));$('accuse').onclick=()=>{let names=room.characters.map((x,i)=>`${i+1}. ${x.name}`).join('\n');let n=prompt('Кого обвиняешь?\n'+names);let i=+n-1;if(Number.isInteger(i)&&room.characters[i])save('accusation',{uid:me.uid,killer:i,at:Date.now()}).then(()=>toast('Обвинение отправлено ведущему.'))}}
-function player(){$('app').innerHTML=`<div class="waiting"><section class="panel"><div class="label">Комната ${code}</div><h1>Ты вошёл как игрок</h1><p class="muted">Ведущий назначит тебе персонажа и откроет приватную карточку. Пока можно оставаться в Discord.</p></section></div>`}
-authgo().then(u=>{me=u;$('status').textContent='Firebase подключён';landing()}).catch(e=>{$('status').textContent='Ошибка Firebase';toast(e.message)});
-</script></body></html>
+import {
+  initializeApp
+} from '[https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js](https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js)';
+
+import {
+  getAuth,
+  signInAnonymously
+} from '[https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js](https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js)';
+
+import {
+  getDatabase,
+  ref,
+  get,
+  set,
+  update,
+  onValue,
+  runTransaction
+} from '[https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js](https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js)';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyCxpowPqAwwtEVzxdyk1nVAzZ2HJKSJH1Q',
+  authDomain: 'delo-1b821.firebaseapp.com',
+  databaseURL: '[https://delo-1b821-default-rtdb.europe-west1.firebasedatabase.app](https://delo-1b821-default-rtdb.europe-west1.firebasedatabase.app)',
+  projectId: 'delo-1b821',
+  storageBucket: 'delo-1b821.firebasestorage.app',
+  messagingSenderId: '438900845008',
+  appId: '1:438900845008:web:e308c6cf469f53593231d5'
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getDatabase(firebaseApp);
+
+let me = null;
+let room = null;
+let code = '';
+let tab = 'case';
+let editChar = 0;
+let unsubscribe = null;
+let notesTimer = null;
+
+const $ = id => document.getElementById(id);
+
+const esc = value =>
+  String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.add('show');
+
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => {
+    $('toast').classList.remove('show');
+  }, 3500);
+}
+
+function generateCode() {
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let result = '';
+
+  for (let i = 0; i < 6; i++) {
+    result += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+
+  return result;
+}
+
+function now() {
+  return Date.now();
+}
+
+function hostUid() {
+  return room?.hostPrivate?.hostUid || null;
+}
+
+function isHost() {
+  return Boolean(me && hostUid() === me.uid);
+}
+
+function participant() {
+  return room?.participants?.[me?.uid] || null;
+}
+
+function currentRole() {
+  return participant()?.role || null;
+}
+
+function roomRef(path = '') {
+  return ref(db, `rooms/${code}${path ? `/${path}` : ''}`);
+}
+
+function roomParticipantRef(uid = me.uid) {
+  return roomRef(`participants/${uid}`);
+}
+
+function privatePlayerRef(uid = me.uid) {
+  return roomRef(`playerPrivate/${uid}`);
+}
+
+function privateDetectiveRef(uid = me.uid) {
+  return roomRef(`detectivePrivate/${uid}`);
+}
+
+async function ensureAuth() {
+  if (auth.currentUser) {
+    me = auth.currentUser;
+    return me;
+  }
+
+  const result = await signInAnonymously(auth);
+  me = result.user;
+  return me;
+}
+
+function defaultCharacters() {
+  return [
+    {
+      id: 'char_1',
+      name: 'Подозреваемый 1',
+      profession: '',
+      archetype: '',
+      relations: '',
+      secret: '',
+      personalGoal: '',
+      murdererInfo: null
+    },
+    {
+      id: 'char_2',
+      name: 'Подозреваемый 2',
+      profession: '',
+      archetype: '',
+      relations: '',
+      secret: '',
+      personalGoal: '',
+      murdererInfo: null
+    },
+    {
+      id: 'char_3',
+      name: 'Подозреваемый 3',
+      profession: '',
+      archetype: '',
+      relations: '',
+      secret: '',
+      personalGoal: '',
+      murdererInfo: null
+    }
+  ];
+}
+
+function defaultTruth() {
+  return {
+    killerId: '',
+    motive: '',
+    method: '',
+    chronology: '',
+    facts: ['', '', '', '', '', ''],
+    ending: ''
+  };
+}
+
+function buildRoom(name, maxPlayers) {
+  const characters = defaultCharacters();
+
+  const participants = {};
+  participants[me.uid] = {
+    uid: me.uid,
+    name,
+    role: 'host',
+    joinedAt: now()
+  };
+
+  return {
+    participants,
+
+    public: {
+      status: 'setup',
+      maxPlayers,
+      createdAt: now(),
+      case: {
+        title: 'Новое дело',
+        victim: '',
+        incident: '',
+        intro: '',
+        location: ''
+      },
+      suspects: characters.map(character => ({
+        id: character.id,
+        name: character.name,
+        profession: character.profession,
+        archetype: character.archetype,
+        relations: character.relations
+      })),
+      facts: {},
+      activeInterrogation: null,
+      interrogationLog: {},
+      endingPublished: false
+    },
+
+    hostPrivate: {
+      hostUid: me.uid,
+      characters,
+      truth: defaultTruth()
+    },
+
+    playerPrivate: {},
+    detectivePrivate: {}
+  };
+}
+
+function subscribe() {
+  unsubscribe?.();
+
+  unsubscribe = onValue(roomRef(), snapshot => {
+    room = snapshot.val();
+
+    if (!room) {
+      toast('Комната больше не существует.');
+      landing();
+      return;
+    }
+
+    render();
+  });
+}
+
+async function createRoom() {
+  const name = $('hostName').value.trim();
+  const maxPlayers = Number($('maxPlayers').value);
+
+  if (!name) {
+    toast('Введи имя ведущего.');
+    return;
+  }
+
+  await ensureAuth();
+
+  let selectedCode = '';
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const candidate = generateCode();
+    const snapshot = await get(ref(db, `rooms/${candidate}`));
+
+    if (!snapshot.exists()) {
+      selectedCode = candidate;
+      break;
+    }
+  }
+
+  if (!selectedCode) {
+    toast('Не удалось подобрать свободный код.');
+    return;
+  }
+
+  code = selectedCode;
+
+  await set(roomRef(), buildRoom(name, maxPlayers));
+
+  tab = 'case';
+  subscribe();
+  toast(`Комната ${code} создана.`);
+}
+
+async function joinRoom(role) {
+  const isDetectiveRole = role === 'detective';
+  const name = $(isDetectiveRole ? 'detectiveName' : 'playerName').value.trim();
+  const enteredCode = $(isDetectiveRole ? 'detectiveCode' : 'playerCode')
+    .value
+    .trim()
+    .toUpperCase();
+
+  if (!name || !enteredCode) {
+    toast('Введи имя и код комнаты.');
+    return;
+  }
+
+  await ensureAuth();
+
+  const targetRef = ref(db, `rooms/${enteredCode}`);
+  const snapshot = await get(targetRef);
+
+  if (!snapshot.exists()) {
+    toast('Комната не найдена.');
+    return;
+  }
+
+  const targetRoom = snapshot.val();
+  const targetParticipants = targetRoom.participants || {};
+
+  if (isDetectiveRole) {
+    const existingDetective = Object.values(targetParticipants)
+      .find(player => player.role === 'detective');
+
+    if (existingDetective && existingDetective.uid !== me.uid) {
+      toast('В этой комнате уже есть детектив.');
+      return;
+    }
+  }
+
+  const participantData = {
+    uid: me.uid,
+    name,
+    role,
+    joinedAt: now()
+  };
+
+  code = enteredCode;
+
+  await set(ref(db, `rooms/${code}/participants/${me.uid}`), participantData);
+
+  if (role === 'detective') {
+    await set(ref(db, `rooms/${code}/detectivePrivate/${me.uid}`), {
+      notes: '',
+      accusation: null
+    });
+  }
+
+  subscribe();
+  toast('Ты вошёл в комнату.');
+}
+
+function landing() {
+  $('app').innerHTML = `
+    <main class="landing">
+      <section>
+        <div class="eyebrow">Устный детектив для Discord</div>
+        <h1>Создай дело. Запусти расследование.</h1>
+        <p class="muted">
+          Ведущий создаёт комнату и сразу готовит дело.
+          Детектив подключается по коду.
+          Дополнительные игроки входят в любой момент и получают приватные роли.
+        </p>
+      </section>
+
+      <section class="panel">
+        <div class="tabs">
+          <button class="active" data-role-tab="host">Я ведущий</button>
+          <button data-role-tab="detective">Я детектив</button>
+          <button data-role-tab="player">Я игрок</button>
+        </div>
+
+        <div id="role-host" class="form active">
+          <div class="field">
+            <label>Имя ведущего</label>
+            <input id="hostName" placeholder="Дмитрий">
+          </div>
+
+          <div class="field">
+            <label>Игроков без ведущего</label>
+            <select id="maxPlayers">
+              ${Array.from({length: 8}, (_, i) => {
+                const value = i + 1;
+                return `<option value="${value}">${value}</option>`;
+              }).join('')}
+            </select>
+          </div>
+
+          <button id="createRoom" class="btn primary">
+            Создать дело
+          </button>
+        </div>
+
+        <div id="role-detective" class="form">
+          <div class="field">
+            <label>Имя детектива</label>
+            <input id="detectiveName" placeholder="Шерлок">
+          </div>
+
+          <div class="field">
+            <label>Код комнаты</label>
+            <input id="detectiveCode" placeholder="ABC123">
+          </div>
+
+          <button id="joinDetective" class="btn primary">
+            Войти как детектив
+          </button>
+        </div>
+
+        <div id="role-player" class="form">
+          <div class="field">
+            <label>Имя игрока</label>
+            <input id="playerName" placeholder="Имя игрока">
+          </div>
+
+          <div class="field">
+            <label>Код комнаты</label>
+            <input id="playerCode" placeholder="ABC123">
+          </div>
+
+          <button id="joinPlayer" class="btn primary">
+            Войти как игрок
+          </button>
+        </div>
+      </section>
+    </main>
+  `;
+
+  document.querySelectorAll('[data-role-tab]').forEach(button => {
+    button.onclick = () => {
+      document.querySelectorAll('[data-role-tab]')
+        .forEach(item => item.classList.toggle('active', item === button));
+
+      document.querySelectorAll('.form')
+        .forEach(form => form.classList.remove('active'));
+
+      $(`role-${button.dataset.roleTab}`).classList.add('active');
+    };
+  });
+
+  $('createRoom').onclick = createRoom;
+  $('joinDetective').onclick = () => joinRoom('detective');
+  $('joinPlayer').onclick = () => joinRoom('player');
+}
+
+function hostNavigation() {
+  const items = [
+    ['case', 'Дело'],
+    ['characters', 'Персонажи'],
+    ['truth', 'Истина'],
+    ['lobby', 'Лобби'],
+    ['game', 'Игра']
+  ];
+
+  return `
+    <aside>
+      <div class="label">Код комнаты</div>
+      <div class="code">${esc(code)}</div>
+      <button id="copyCode" class="btn secondary">
+        Скопировать код
+      </button>
+
+      <nav class="nav">
+        ${items.map(([key, label]) => `
+          <button
+            data-host-nav="${key}"
+            class="${tab === key ? 'active' : ''}">
+            ${label}
+          </button>
+        `).join('')}
+      </nav>
+
+      <div class="sep"></div>
+
+      <p class="muted small">
+        Комната создаётся сразу.
+        Детектив и игроки могут подключаться независимо от подготовки дела.
+      </p>
+    </aside>
+  `;
+}
+
+function hostRender() {
+  $('app').innerHTML = `
+    <div class="shell">
+      ${hostNavigation()}
+      <main class="main">
+        ${hostPage()}
+      </main>
+    </div>
+  `;
+
+  $('copyCode').onclick = () => {
+    navigator.clipboard
+      .writeText(code)
+      .then(() => toast('Код скопирован.'));
+  };
+
+  document.querySelectorAll('[data-host-nav]').forEach(button => {
+    button.onclick = () => {
+      tab = button.dataset.hostNav;
+      render();
+    };
+  });
+
+  bindHost();
+}
+
+function render() {
+  if (!room || !me) return;
+
+  if (isHost()) {
+    hostRender();
+    return;
+  }
+
+  const role = currentRole();
+
+  if (role === 'detective') {
+    detectiveRender();
+    return;
+  }
+
+  if (role === 'player') {
+    playerRender();
+    return;
+  }
+
+  $('app').innerHTML = `
+    <div class="waiting">
+      <section class="panel">
+        <h1>Подключение…</h1>
+        <p class="muted">
+          Проверяем роль участника.
+        </p>
+      </section>
+    </div>
+  `;
+}
+
+function hostPage() {
+  if (tab === 'case') return casePage();
+  if (tab === 'characters') return charactersPage();
+  if (tab === 'truth') return truthPage();
+  if (tab === 'lobby') return lobbyPage();
+  return gamePage();
+}
+
+function casePage() {
+  const caseData = room.public?.case || {};
+
+  return `
+    <div class="head">
+      <div>
+        <div class="label">Подготовка</div>
+        <h1>Дело</h1>
+        <p class="muted">
+          Эти материалы станут доступны детективу после запуска расследования.
+        </p>
+      </div>
+    </div>
+
+    <form id="caseForm" class="card">
+      <div class="grid2">
+        <div class="field">
+          <label>Название дела</label>
+          <input name="title" value="${esc(caseData.title)}">
+        </div>
+
+        <div class="field">
+          <label>Жертва</label>
+          <input name="victim" value="${esc(caseData.victim)}">
+        </div>
+
+        <div class="field">
+          <label>Инцидент</label>
+          <input name="incident" value="${esc(caseData.incident)}">
+        </div>
+
+        <div class="field">
+          <label>Локация</label>
+          <input name="location" value="${esc(caseData.location)}">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Вводная для детектива</label>
+        <textarea name="intro">${esc(caseData.intro)}</textarea>
+      </div>
+
+      <button class="btn primary">
+        Сохранить дело
+      </button>
+    </form>
+  `;
+}
+
+function charactersPage() {
+  const characters = room.hostPrivate?.characters || [];
+  const character = characters[editChar] || characters;
+
+  if (!character) {
+    return `
+      <div class="card">
+        <p class="muted">Персонажей пока нет.</p>
+        <button id="addCharacter" class="btn primary">
+          Добавить персонажа
+        </button>
+      </div>
+    `;
+  }
+
+  const assignedParticipant = Object.values(room.participants || {})
+    .find(participant => participant.characterId === character.id);
+
+  return `
+    <div class="head">
+      <div>
+        <div class="label">Приватные карточки</div>
+        <h1>Персонажи</h1>
+        <p class="muted">
+          Полные карточки видит только ведущий.
+          Игрок получает данные только назначенного персонажа.
+        </p>
+      </div>
+
+      <button id="addCharacter" class="btn secondary">
+        + Персонаж
+      </button>
+    </div>
+
+    <div class="chars">
+      <div class="charlist">
+        ${characters.map((item, index) => `
+          <button
+            data-character-index="${index}"
+            class="btn ${index === editChar ? 'primary' : 'secondary'}">
+            ${esc(item.name || 'Без имени')}
+          </button>
+        `).join('')}
+      </div>
+
+      <form id="characterForm" class="card">
+        <div class="grid2">
+          <div class="field">
+            <label>Имя</label>
+            <input name="name" value="${esc(character.name)}">
+          </div>
+
+          <div class="field">
+            <label>Профессия / роль</label>
+            <input name="profession" value="${esc(character.profession)}">
+          </div>
+
+          <div class="field">
+            <label>Архетип</label>
+            <input name="archetype" value="${esc(character.archetype)}">
+          </div>
+
+          <div class="field">
+            <label>Связь и отношения</label>
+            <input name="relations" value="${esc(character.relations)}">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Секрет</label>
+          <textarea name="secret">${esc(character.secret)}</textarea>
+        </div>
+
+        <div class="field">
+          <label>Личная цель</label>
+          <textarea name="personalGoal">${esc(character.personalGoal)}</textarea>
+        </div>
+
+        <div class="sep"></div>
+
+        <div class="field">
+          <label>Назначить игроку</label>
+          <select name="assignedUid">
+            <option value="">Не назначен</option>
+            ${Object.values(room.participants || {})
+              .filter(item => item.role === 'player')
+              .map(item => `
+                <option
+                  value="${esc(item.uid)}"
+                  ${assignedParticipant?.uid === item.uid ? 'selected' : ''}>
+                  ${esc(item.name)}
+                </option>
+              `).join('')}
+          </select>
+        </div>
+
+        <div class="inline">
+          <button class="btn primary">
+            Сохранить персонажа
+          </button>
+
+          <span class="muted small">
+            ${assignedParticipant
+              ? `Назначен: ${esc(assignedParticipant.name)}`
+              : 'Персонаж пока свободен'}
+          </span>
+        </div>
+      </form>
+    </div>
+  `;
+}
+
+function truthPage() {
+  const truth = room.hostPrivate?.truth || defaultTruth();
+  const characters = room.hostPrivate?.characters || [];
+
+  return `
+    <div class="head">
+      <div>
+        <div class="label">Только ведущий</div>
+        <h1>Истина</h1>
+        <p class="muted">
+          Эти данные никогда не попадают в публичную часть комнаты.
+        </p>
+      </div>
+    </div>
+
+    <div class="notice">
+      Детектив не видит убийцу, мотив, способ убийства, хронологию и секреты персонажей.
+    </div>
+
+    <form id="truthForm" class="card">
+      <div class="grid2">
+        <div class="field">
+          <label>Убийца</label>
+          <select name="killerId">
+            <option value="">Не выбран</option>
+            ${characters.map(character => `
+              <option
+                value="${esc(character.id)}"
+                ${truth.killerId === character.id ? 'selected' : ''}>
+                ${esc(character.name)}
+              </option>
+            `).join('')}
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Мотив</label>
+          <input name="motive" value="${esc(truth.motive)}">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Способ убийства</label>
+        <textarea name="method">${esc(truth.method)}</textarea>
+      </div>
+
+      <div class="field">
+        <label>Хронология</label>
+        <textarea name="chronology">${esc(truth.chronology)}</textarea>
+      </div>
+
+      <div class="field">
+        <label>Развязка</label>
+        <textarea name="ending" placeholder="Что произошло на самом деле и как это объяснить">${esc(truth.ending)}</textarea>
+      </div>
+
+      <div class="label">Факты для ручной выдачи</div>
+      <div class="facts">
+        ${(truth.facts || []).map((fact, index) => `
+          <div class="fact">
+            <b>${index + 1}</b>
+            <input
+              name="fact${index}"
+              value="${esc(fact)}"
+              placeholder="Факт ${index + 1}">
+          </div>
+        `).join('')}
+      </div>
+
+      <br>
+
+      <button class="btn primary">
+        Сохранить истину
+      </button>
+    </form>
+  `;
+}
+
+function lobbyPage() {
+  const participants = Object.values(room.participants || {});
+  const maxPlayers = room.public?.maxPlayers || 1;
+  const detective = participants.find(item => item.role === 'detective');
+  const players = participants.filter(item => item.role === 'player');
+
+  return `
+    <div class="head">
+      <div>
+        <div class="label">Подключения</div>
+        <h1>Лобби</h1>
+        <p class="muted">
+          Подготовка дела не зависит от того, кто уже вошёл в комнату.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="stat">
+        <span class="muted small">Детектив</span>
+        <strong>${detective ? '1 / 1' : '0 / 1'}</strong>
+      </div>
+
+      <div class="stat">
+        <span class="muted small">Игроки-персонажи</span>
+        <strong>${players.length} / ${maxPlayers}</strong>
+      </div>
+
+      <div class="stat">
+        <span class="muted small">Статус</span>
+        <strong>${room.public?.status === 'investigation' ? 'Игра' : 'Подготовка'}</strong>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="card">
+      <h3>Участники</h3>
+
+      ${participants.map(item => `
+        <div class="player">
+          <div>
+            <div>${esc(item.name)}</div>
+            <div class="muted small">
+              ${item.uid === me.uid ? 'Это ты' : ''}
+            </div>
+          </div>
+
+          <div class="role">
+            ${item.role === 'host'
+              ? 'ведущий'
+              : item.role === 'detective'
+                ? 'детектив'
+                : 'игрок'}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <br>
+
+    <div class="card">
+      <h3>Проверка готовности</h3>
+      ${detective
+        ? '<div class="notice good">Детектив подключён. Можно запускать расследование.</div>'
+        : '<div class="notice">Детектив ещё не вошёл. Дело можно продолжать готовить.</div>'}
+
+      ${room.public?.status === 'setup'
+        ? `<button id="startFromLobby" class="btn primary" ${detective ? '' : 'disabled'}>
+             Начать расследование
+           </button>`
+        : ''}
+    </div>
+  `;
+}
+
+function gamePage() {
+  const publicData = room.public || {};
+  const active = publicData.activeInterrogation;
+  const characters = room.hostPrivate?.characters || [];
+  const facts = room.hostPrivate?.truth?.facts || [];
+  const revealed = publicData.facts || {};
+  const accusation = Object.values(room.detectivePrivate || {})
+    .map(item => item?.accusation)
+    .find(Boolean);
+
+  return `
+    <div class="head">
+      <div>
+        <div class="label">Управление расследованием</div>
+        <h1>Игра</h1>
+        <p class="muted">
+          Здесь ведущий запускает игру, следит за допросом и выдаёт факты.
+        </p>
+      </div>
+
+      ${publicData.status === 'setup'
+        ? `<button id="startInvestigation" class="btn primary">
+             Начать расследование
+           </button>`
+        : `<span class="role">Расследование идёт</span>`}
+    </div>
+
+    <div class="grid2">
+      <section class="card">
+        <h3>Текущий допрос</h3>
+
+        ${active
+          ? `
+            <div class="notice good">
+              Сейчас допрашивается:
+              <strong>${esc(active.characterName || 'персонаж')}</strong>
+            </div>
+            <button id="finishInterrogation" class="btn secondary">
+              Закончить допрос
+            </button>
+          `
+          : `
+            <p class="muted">
+              Детектив пока никого не вызвал.
+            </p>
+          `}
+      </section>
+
+      <section class="card">
+        <h3>Финальное обвинение</h3>
+
+        ${accusation
+          ? `
+            <div class="notice danger">
+              Детектив сделал единственное обвинение.
+            </div>
+            <p><b>Подозреваемый:</b> ${esc(accusation.suspectName)}</p>
+            <p><b>Обоснование:</b></p>
+            <p class="muted">${esc(accusation.reason)}</p>
+
+            ${publicData.endingPublished
+              ? `<div class="notice good">Развязка уже открыта.</div>`
+              : `<button id="publishEnding" class="btn danger">
+                   Открыть развязку
+                 </button>`}
+          `
+          : `
+            <p class="muted">
+              Обвинение ещё не отправлено.
+            </p>
+          `}
+      </section>
+    </div>
+
+    <br>
+
+    <section class="card">
+      <h3>Факты дела</h3>
+
+      ${facts.map((fact, index) => `
+        <div class="player">
+          <span>
+            ${fact
+              ? esc(fact)
+              : `<span class="muted">Факт ${index + 1} не заполнен</span>`}
+          </span>
+
+          <button
+            class="btn secondary"
+            data-reveal-fact="${index}"
+            ${!fact || revealed[index] ? 'disabled' : ''}>
+            ${revealed[index] ? 'Выдан' : 'Выдать'}
+          </button>
+        </div>
+      `).join('')}
+    </section>
+
+    <br>
+
+    <section class="card">
+      <h3>Лог допросов</h3>
+
+      ${Object.values(publicData.interrogationLog || {}).length
+        ? Object.values(publicData.interrogationLog).map(log => `
+            <div class="player">
+              <span>
+                ${esc(log.characterName)}
+                <span class="muted small">
+                  — ${new Date(log.startedAt).toLocaleString('ru-RU')}
+                </span>
+              </span>
+              <span class="role">завершён</span>
+            </div>
+          `).join('')
+        : '<p class="muted">Допросов пока не было.</p>'}
+    </section>
+
+    ${publicData.endingPublished
+      ? `
+        <br>
+        <section class="card">
+          <h3>Развязка</h3>
+          <p>${esc(room.hostPrivate?.truth?.ending || 'Развязка не заполнена.')}</p>
+        </section>
+      `
+      : ''}
+  `;
+}
+
+async function savePublic(values) {
+  await update(roomRef('public'), values);
+}
+
+async function saveHostPrivate(values) {
+  await update(roomRef('hostPrivate'), values);
+}
+
+async function saveParticipants(values) {
+  await update(roomRef('participants'), values);
+}
+
+function bindHost() {
+  const caseForm = $('caseForm');
+
+  if (caseForm) {
+    caseForm.onsubmit = async event => {
+      event.preventDefault();
+
+      const form = new FormData(caseForm);
+
+      await savePublic({
+        case: {
+          title: form.get('title'),
+          victim: form.get('victim'),
+          incident: form.get('incident'),
+          intro: form.get('intro'),
+          location: form.get('location')
+        }
+      });
+
+      toast('Дело сохранено.');
+    };
+  }
+
+  document.querySelectorAll('[data-character-index]').forEach(button => {
+    button.onclick = () => {
+      editChar = Number(button.dataset.characterIndex);
+      render();
+    };
+  });
+
+  const addCharacter = $('addCharacter');
+
+  if (addCharacter) {
+    addCharacter.onclick = async () => {
+      const characters = [...(room.hostPrivate?.characters || [])];
+
+      characters.push({
+        id: `char_${Date.now()}`,
+        name: 'Новый персонаж',
+        profession: '',
+        archetype: '',
+        relations: '',
+        secret: '',
+        personalGoal: '',
+        murdererInfo: null
+      });
+
+      await saveHostPrivate({characters});
+      editChar = characters.length - 1;
+      toast('Персонаж добавлен.');
+    };
+  }
+
+  const characterForm = $('characterForm');
+
+  if (characterForm) {
+    characterForm.onsubmit = async event => {
+      event.preventDefault();
+
+      const form = new FormData(characterForm);
+      const characters = [...(room.hostPrivate?.characters || [])];
+      const current = characters[editChar];
+
+      if (!current) return;
+
+      characters[editChar] = {
+        ...current,
+        name: form.get('name'),
+        profession: form.get('profession'),
+        archetype: form.get('archetype'),
+        relations: form.get('relations'),
+        secret: form.get('secret'),
+        personalGoal: form.get('personalGoal')
+      };
+
+      const selectedUid = form.get('assignedUid');
+
+      const participantUpdates = {};
+      const playerPrivateUpdates = {};
+
+      Object.values(room.participants || {})
+        .filter(item => item.role === 'player')
+        .forEach(item => {
+          if (item.characterId === current.id) {
+            participantUpdates[item.uid] = {
+              ...item,
+              characterId: null
+            };
+          }
+        });
+
+      if (selectedUid) {
+        participantUpdates[selectedUid] = {
+          ...(room.participants?.[selectedUid] || {}),
+          characterId: current.id
+        };
+
+        const assignedCharacter = characters[editChar];
+
+        playerPrivateUpdates[selectedUid] = {
+          characterId: assignedCharacter.id,
+          name: assignedCharacter.name,
+          profession: assignedCharacter.profession,
+          archetype: assignedCharacter.archetype,
+          relations: assignedCharacter.relations,
+          secret: assignedCharacter.secret,
+          personalGoal: assignedCharacter.personalGoal,
+          murdererInfo: assignedCharacter.murdererInfo || null
+        };
+      }
+
+      await saveHostPrivate({characters});
+      await savePublic({
+        suspects: characters.map(character => ({
+          id: character.id,
+          name: character.name,
+          profession: character.profession,
+          archetype: character.archetype,
+          relations: character.relations
+        }))
+      });
+
+      for (const [uid, data] of Object.entries(participantUpdates)) {
+        await set(ref(db, `rooms/${code}/participants/${uid}`), data);
+      }
+
+      for (const [uid, data] of Object.entries(playerPrivateUpdates)) {
+        await set(ref(db, `rooms/${code}/playerPrivate/${uid}`), data);
+      }
+
+      toast('Персонаж и назначение сохранены.');
+    };
+  }
+
+  const truthForm = $('truthForm');
+
+  if (truthForm) {
+    truthForm.onsubmit = async event => {
+      event.preventDefault();
+
+      const form = new FormData(truthForm);
+      const oldFacts = room.hostPrivate?.truth?.facts || [];
+      const facts = oldFacts.map((_, index) => form.get(`fact${index}`) || '');
+
+      const truth = {
+        killerId: form.get('killerId'),
+        motive: form.get('motive'),
+        method: form.get('method'),
+        chronology: form.get('chronology'),
+        ending: form.get('ending'),
+        facts
+      };
+
+      const characters = room.hostPrivate?.characters || [];
+      const updatedCharacters = characters.map(character => ({
+        ...character,
+        murdererInfo: character.id === truth.killerId
+          ? {
+              motive: truth.motive,
+              method: truth.method
+            }
+          : null
+      }));
+
+      await saveHostPrivate({
+        truth,
+        characters: updatedCharacters
+      });
+
+      toast('Истина сохранена.');
+    };
+  }
+
+  const startButtons = [
+    $('startInvestigation'),
+    $('startFromLobby')
+  ].filter(Boolean);
+
+  startButtons.forEach(button => {
+    button.onclick = async () => {
+      const hasDetective = Object.values(room.participants || {})
+        .some(item => item.role === 'detective');
+
+      if (!hasDetective) {
+        toast('Сначала дождись детектива.');
+        return;
+      }
+
+      await savePublic({status: 'investigation'});
+      toast('Расследование началось.');
+    };
+  });
+
+  const finishInterrogation = $('finishInterrogation');
+
+  if (finishInterrogation) {
+    finishInterrogation.onclick = async () => {
+      const active = room.public?.activeInterrogation;
+
+      if (!active) return;
+
+      const logId = `interrogation_${Date.now()}`;
+
+      await update(roomRef('public'), {
+        activeInterrogation: null,
+        [`interrogationLog/${logId}`]: {
+          ...active,
+          finishedAt: now()
+        }
+      });
+
+      toast('Допрос завершён.');
+    };
+  }
+
+  document.querySelectorAll('[data-reveal-fact]').forEach(button => {
+    button.onclick = async () => {
+      const index = button.dataset.revealFact;
+      const fact = room.hostPrivate?.truth?.facts?.[index];
+
+      if (!fact) {
+        toast('Сначала заполни этот факт в разделе «Истина».');
+        return;
+      }
+
+      await update(roomRef('public'), {
+        [`facts/${index}`]: fact
+      });
+
+      toast('Факт выдан детективу.');
+    };
+  });
+
+  const publishEnding = $('publishEnding');
+
+  if (publishEnding) {
+    publishEnding.onclick = async () => {
+      await savePublic({endingPublished: true});
+      toast('Развязка открыта.');
+    };
+  }
+}
+
+function detectiveRender() {
+  const publicData = room.public || {};
+
+  if (publicData.status !== 'investigation') {
+    $('app').innerHTML = `
+      <div class="waiting">
+        <section class="panel">
+          <div class="label">Комната ${esc(code)}</div>
+          <h1>Дело ещё готовится</h1>
+          <p class="muted">
+            Ведущий заполняет материалы.
+            Когда он будет готов, он вручную запустит расследование.
+          </p>
+        </section>
+      </div>
+    `;
+    return;
+  }
+
+  const caseData = publicData.case || {};
+  const suspects = publicData.suspects || [];
+  const revealedFacts = Object.values(publicData.facts || {});
+  const detectivePrivate = room.detectivePrivate?.[me.uid] || {};
+  const accusation = detectivePrivate.accusation;
+  const active = publicData.activeInterrogation;
+
+  $('app').innerHTML = `
+    <main class="main">
+      <div class="head">
+        <div>
+          <div class="label">Детектив · комната ${esc(code)}</div>
+          <h1>${esc(caseData.title || 'Дело')}</h1>
+          <p class="muted">${esc(caseData.intro || '')}</p>
+        </div>
+
+        <span class="role">Расследование</span>
+      </div>
+
+      <div class="grid2">
+        <section class="card">
+          <h3>Материалы дела</h3>
+
+          <p><b>Жертва:</b> ${esc(caseData.victim || 'не указана')}</p>
+          <p><b>Инцидент:</b> ${esc(caseData.incident || 'не указан')}</p>
+          <p><b>Локация:</b> ${esc(caseData.location || 'не указана')}</p>
+
+          <div class="sep"></div>
+
+          <h3>Подозреваемые</h3>
+
+          <div class="callgrid">
+            ${suspects.length
+              ? suspects.map(suspect => `
+                  <button
+                    class="call"
+                    data-call-suspect="${esc(suspect.id)}"
+                    ${active ? 'disabled' : ''}>
+                    <b>${esc(suspect.name)}</b><br>
+                    <span class="muted">
+                      ${esc(suspect.profession || 'роль не указана')}
+                    </span>
+                    ${suspect.archetype
+                      ? `<br><span class="muted small">${esc(suspect.archetype)}</span>`
+                      : ''}
+                  </button>
+                `).join('')
+              : '<p class="muted">Подозреваемые не добавлены.</p>'}
+          </div>
+
+          ${active
+            ? `
+              <div class="sep"></div>
+              <div class="notice good">
+                На допрос вызван:
+                <strong>${esc(active.characterName)}</strong>
+                <p class="small">
+                  Веди разговор в Discord, а после завершения допроса дождись обновления экрана.
+                </p>
+              </div>
+            `
+            : ''}
+        </section>
+
+        <section class="card">
+          <h3>Открытые факты</h3>
+
+          ${revealedFacts.length
+            ? revealedFacts.map(fact => `
+                <p>• ${esc(fact)}</p>
+              `).join('')
+            : '<p class="muted">Ведущий ещё не раскрыл факты.</p>'}
+
+          <div class="sep"></div>
+
+          <h3>Личные заметки</h3>
+          <textarea id="detectiveNotes" placeholder="Эти заметки видишь только ты">${esc(detectivePrivate.notes || '')}</textarea>
+
+          <br>
+
+          ${accusation
+            ? `
+              <div class="notice danger">
+                Обвинение уже отправлено.
+                Второго обвинения сделать нельзя.
+              </div>
+              <p><b>Подозреваемый:</b> ${esc(accusation.suspectName)}</p>
+              <p><b>Обоснование:</b></p>
+              <p class="muted">${esc(accusation.reason)}</p>
+            `
+            : `
+              <button id="makeAccusation" class="btn danger">
+                Сделать единственное обвинение
+              </button>
+            `}
+        </section>
+      </div>
+
+      ${publicData.endingPublished
+        ? `
+          <br>
+          <section class="card">
+            <h3>Развязка</h3>
+            <p class="muted">
+              Ведущий открыл развязку. Обсудите её голосом в Discord.
+            </p>
+          </section>
+        `
+        : ''}
+    </main>
+  `;
+
+  const notes = $('detectiveNotes');
+
+  if (notes) {
+    notes.oninput = () => {
+      clearTimeout(notesTimer);
+
+      notesTimer = setTimeout(async () => {
+        await set(
+          ref(db, `rooms/${code}/detectivePrivate/${me.uid}/notes`),
+          notes.value
+        );
+      }, 500);
+    };
+  }
+
+  document.querySelectorAll('[data-call-suspect]').forEach(button => {
+    button.onclick = async () => {
+      const suspectId = button.dataset.callSuspect;
+      const suspect = suspects.find(item => item.id === suspectId);
+
+      if (!suspect) return;
+
+      await set(roomRef('public/activeInterrogation'), {
+        characterId: suspect.id,
+        characterName: suspect.name,
+        detectiveUid: me.uid,
+        startedAt: now()
+      });
+
+      toast(`${suspect.name} вызван на допрос.`);
+    };
+  });
+
+  const makeAccusation = $('makeAccusation');
+
+  if (makeAccusation) {
+    makeAccusation.onclick = async () => {
+      const suspectLines = suspects
+        .map((suspect, index) => `${index + 1}. ${suspect.name}`)
+        .join('\n');
+
+      const selected = prompt(
+        `Введи номер подозреваемого:\n\n${suspectLines}`
+      );
+
+      const index = Number(selected) - 1;
+      const suspect = suspects[index];
+
+      if (!suspect) {
+        toast('Подозреваемый не выбран.');
+        return;
+      }
+
+      const reason = prompt(
+        'Опиши, почему ты считаешь этого персонажа убийцей:'
+      );
+
+      if (!reason?.trim()) {
+        toast('Добавь обоснование обвинения.');
+        return;
+      }
+
+      const currentSnapshot = await get(
+        ref(db, `rooms/${code}/detectivePrivate/${me.uid}/accusation`)
+      );
+
+      if (currentSnapshot.exists()) {
+        toast('Обвинение уже было отправлено.');
+        return;
+      }
+
+      await set(
+        ref(db, `rooms/${code}/detectivePrivate/${me.uid}/accusation`),
+        {
+          suspectId: suspect.id,
+          suspectName: suspect.name,
+          reason: reason.trim(),
+          submittedAt: now()
+        }
+      );
+
+      toast('Единственное обвинение отправлено ведущему.');
+    };
+  }
+}
+
+function playerRender() {
+  const privateCard = room.playerPrivate?.[me.uid];
+  const publicData = room.public || {};
+  const participantData = participant();
+
+  if (!privateCard) {
+    $('app').innerHTML = `
+      <div class="waiting">
+        <section class="panel">
+          <div class="label">Комната ${esc(code)}</div>
+          <h1>Карточка готовится</h1>
+          <p class="muted">
+            Ведущий пока не назначил тебе персонажа.
+            Оставайся в Discord и дождись назначения.
+          </p>
+        </section>
+      </div>
+    `;
+    return;
+  }
+
+  const murdererInfo = privateCard.murdererInfo;
+
+  $('app').innerHTML = `
+    <main class="main">
+      <div class="head">
+        <div>
+          <div class="label">Игрок-персонаж · комната ${esc(code)}</div>
+          <h1>${esc(privateCard.name)}</h1>
+          <p class="muted">
+            Ты видишь только свою приватную карточку.
+          </p>
+        </div>
+
+        <span class="role">
+          ${publicData.status === 'investigation'
+            ? 'Игра идёт'
+            : 'Ожидание запуска'}
+        </span>
+      </div>
+
+      <section class="card">
+        <div class="grid2">
+          <div>
+            <div class="label">Профессия / роль</div>
+            <p>${esc(privateCard.profession || 'не указана')}</p>
+          </div>
+
+          <div>
+            <div class="label">Архетип</div>
+            <p>${esc(privateCard.archetype || 'не указан')}</p>
+          </div>
+        </div>
+
+        <div class="sep"></div>
+
+        <div>
+          <div class="label">Связи и отношения</div>
+          <p>${esc(privateCard.relations || 'не указаны')}</p>
+        </div>
+
+        <div class="sep"></div>
+
+        <div>
+          <div class="label">Твой секрет</div>
+          <p>${esc(privateCard.secret || 'Секрет не задан.')}</p>
+        </div>
+
+        <div class="sep"></div>
+
+        <div>
+          <div class="label">Личная цель</div>
+          <p>${esc(privateCard.personalGoal || 'Цель не задана.')}</p>
+        </div>
+
+        ${murdererInfo
+          ? `
+            <div class="sep"></div>
+            <div class="notice danger">
+              <div class="label">Приватная информация убийцы</div>
+              <p><b>Мотив:</b> ${esc(murdererInfo.motive)}</p>
+              <p><b>Способ:</b> ${esc(murdererInfo.method)}</p>
+              <p class="small">
+                Не показывай эти данные детективу.
+              </p>
+            </div>
+          `
+          : ''}
+      </section>
+
+      <br>
+
+      <section class="card">
+        <h3>Правила твоей роли</h3>
+        <p class="muted">
+          Отыгрывай персонажа, отвечай на вопросы детектива в рамках своей карточки,
+          можешь скрывать секреты и направлять разговор в нужную тебе сторону.
+        </p>
+      </section>
+    </main>
+  `;
+
+  if (participantData?.characterId !== privateCard.characterId) {
+    toast('Карточка обновлена ведущим.');
+  }
+}
+
+async function startApplication() {
+  try {
+    await ensureAuth();
+    $('status').textContent = 'Firebase подключён';
+    landing();
+  } catch (error) {
+    $('status').textContent = 'Ошибка Firebase';
+    toast(error.message);
+  }
+}
+
+startApplication();
+</script>
+</body>
+</html>
+```
+
+## Что изменилось в логике
+
+### 1. Новая структура базы
+
+Теперь HTML использует структуру, под которую были написаны новые Rules:
+
+```text
+rooms/{code}
+├─ participants
+├─ public
+│  ├─ status
+│  ├─ case
+│  ├─ suspects
+│  ├─ facts
+│  ├─ activeInterrogation
+│  ├─ interrogationLog
+│  └─ endingPublished
+├─ hostPrivate
+│  ├─ hostUid
+│  ├─ characters
+│  └─ truth
+├─ playerPrivate
+└─ detectivePrivate
+```
+
+Это устраняет главную проблему старой версии: раньше весь объект комнаты читался детективом целиком, включая `truth` и `characters`.
+
+### 2. Детектив больше не получает истину
+
+Детектив читает только:
+
+```text
+public.case
+public.suspects
+public.facts
+public.activeInterrogation
+public.endingPublished
+detectivePrivate/{свой uid}
+```
+
+Ведущая истина находится отдельно:
+
+```text
+hostPrivate.truth
+```
+
+Она не попадает в клиент детектива.
+
+### 3. Игрок получает карточку только после назначения
+
+Ведущий выбирает игрока в разделе «Персонажи». После сохранения создаётся:
+
+```text
+playerPrivate/{uid}
+```
+
+Игрок получает:
+
+- имя;
+- профессию;
+- архетип;
+- отношения;
+- секрет;
+- личную цель;
+- мотив и способ, если персонаж является убийцей.
+
+### 4. Назначение убийцы автоматически синхронизируется
+
+Если ведущий выбирает персонажа в поле «Убийца», код автоматически добавляет этому персонажу:
+
+```json
+"murdererInfo": {
+  "motive": "...",
+  "method": "..."
+}
+```
+
+После назначения карточка игрока содержит эту информацию приватно.
+
+### 5. Одно обвинение
+
+Обвинение сохраняется по адресу:
+
+```text
+rooms/{code}/detectivePrivate/{detectiveUid}/accusation
+```
+
+Перед записью сайт дополнительно проверяет, что записи ещё нет. Rules также запрещают перезапись существующего обвинения благодаря условию:
+
+```json
+"!data.exists()"
+```
+
+### 6. Допрос не раскрывает содержание разговора
+
+Сайт синхронизирует только факт активного допроса:
+
+```json
+{
+  "characterId": "char_1",
+  "characterName": "Подозреваемый 1",
+  "detectiveUid": "...",
+  "startedAt":  ...
+}
+```
+
+Сам разговор остаётся в Discord, как и требуется механикой игры. Ведущий после разговора завершает допрос и получает запись в журнале.
+
+## Обязательное замечание по Rules
+
+Текущие Rules, которые ты вставил, всё ещё нужно немного поправить под этот файл. В частности:
+
+1. В `public` отсутствует отдельное разрешение записи `interrogationLog`.
+2. В `detectivePrivate/$uid/accusation` текущая проверка ожидает поля `suspectId`, `reason`, `submittedAt`, но не разрешает дополнительно используемые `suspectName`. Из-за строгого поведения `.validate` на уровне дочерних узлов это может привести к блокировке записи.
+3. Для создания `playerPrivate/{uid}` ведущим правила подходят.
+4. Для чтения всей комнаты верхнее правило может работать, потому что участник записывается в `participants` до подписки на комнату.
+5. Ведущий может читать собственные `hostPrivate` и `public`.
+
+Минимально необходимая правка в Rules — заменить блок `detectivePrivate` на этот:
+
+```json
+"detectivePrivate": {
+  "$uid": {
+    ".read": "auth != null && ($uid === auth.uid || root.child('rooms').child($roomCode).child('hostPrivate').child('hostUid').val() === auth.uid)",
+
+    "notes": {
+      ".write": "auth != null && $uid === auth.uid && root.child('rooms').child($roomCode).child('participants').child(auth.uid).child('role').val() === 'detective'",
+      ".validate": "newData.isString() && newData.val().length <= 10000"
+    },
+
+    "accusation": {
+      ".write": "auth != null && $uid === auth.uid && root.child('rooms').child($roomCode).child('participants').child(auth.uid).child('role').val() === 'detective' && !data.exists() && newData.hasChildren(['suspectId', 'suspectName', 'reason', 'submittedAt'])",
+
+      ".validate": "newData.child('suspectId').isString() && newData.child('suspectId').val().length <= 100 && newData.child('suspectName').isString() && newData.child('suspectName').val().length <= 200 && newData.child('reason').isString() && newData.child('reason').val().length <= 5000 && newData.child('submittedAt').isNumber()"
+    }
+  }
+}
+```
+
+И в блок `public` нужно добавить разрешение записи ведущего для журнала допросов:
+
+```json
+"interrogationLog": {
+  ".write": "auth != null && root.child('rooms').child($roomCode).child('hostPrivate').child('hostUid').val() === auth.uid"
+}
+```
+
+В текущем HTML запись в `public/interrogationLog` выполняется ведущим, поэтому без этого разрешения завершение допроса будет отклонено.
+
+Файл, который ты прислал, действительно содержит текущую рабочую Firebase-версию сайта и уже имеет настроенный Firebase-клиент и базовый поток создания/входа. [1]
