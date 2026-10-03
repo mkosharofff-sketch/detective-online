@@ -28,7 +28,7 @@
         "detectivePrivate": {
           "$uid": {
             ".read": "auth != null && ($uid === auth.uid || root.child('rooms').child($room).child('hostPrivate/hostUid').val() === auth.uid)",
-            ".write": "auth != null && $uid === auth.uid && root.child('rooms').child($room).child('participants').child(auth.uid).child('role').val() === 'detective'"
+            ".write": "auth != null && $uid === auth.uid && (root.child('rooms').child($room).child('participants').child(auth.uid).child('role').val() === 'detective' || root.child('rooms').child($room).child('join/detectiveUid').val() === auth.uid)"
           }
         },
         "hostPrivate": {
