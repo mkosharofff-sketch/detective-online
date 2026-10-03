@@ -2,32 +2,35 @@
   "rules": {
     "rooms": {
       "$room": {
-        ".read": "auth != null && data.child('participants').child(auth.uid).exists()",
         ".write": "auth != null && ((!data.exists() && newData.child('hostPrivate/hostUid').val() === auth.uid && newData.child('participants').child(auth.uid).child('role').val() === 'host') || (data.exists() && data.child('hostPrivate/hostUid').val() === auth.uid))",
         "join": {
-          ".read": "auth != null && (data.parent().child('join/open').val() === true || data.parent().child('participants').child(auth.uid).exists())",
+          ".read": "auth != null",
           "detectiveUid": {
             ".write": "auth != null && ((!data.exists() || data.val() === '' || data.val() === auth.uid) && newData.val() === auth.uid)"
           }
         },
         "participants": {
+          ".read": "auth != null && root.child('rooms').child($room).child('participants').child(auth.uid).exists()",
           "$uid": {
             ".write": "auth != null && $uid === auth.uid && !data.exists() && newData.child('uid').val() === auth.uid && (newData.child('role').val() === 'detective' || newData.child('role').val() === 'player')"
           }
         },
         "public": {
+          ".read": "auth != null && root.child('rooms').child($room).child('participants').child(auth.uid).exists()",
           "activeInterrogation": {
-            ".write": "auth != null && root.child('rooms').child($room).child('participants').child(auth.uid).child('role').val() === 'detective' && !data.exists() && newData.child('detectiveUid').val() === auth.uid"
+            ".write": "auth != null && root.child('rooms').child($room).child('participants').child(auth.uid).child('role').val() === 'detective' && ((!data.exists() && newData.child('detectiveUid').val() === auth.uid) || (data.exists() && !newData.exists()))"
           }
         },
         "playerPrivate": {
+          ".read": "auth != null && root.child('rooms').child($room).child('hostPrivate/hostUid').val() === auth.uid",
           "$uid": {
-            ".read": "auth != null && ($uid === auth.uid || root.child('rooms').child($room).child('hostPrivate/hostUid').val() === auth.uid)"
+            ".read": "auth != null && $uid === auth.uid"
           }
         },
         "detectivePrivate": {
+          ".read": "auth != null && root.child('rooms').child($room).child('hostPrivate/hostUid').val() === auth.uid",
           "$uid": {
-            ".read": "auth != null && ($uid === auth.uid || root.child('rooms').child($room).child('hostPrivate/hostUid').val() === auth.uid)",
+            ".read": "auth != null && $uid === auth.uid",
             ".write": "auth != null && $uid === auth.uid && (root.child('rooms').child($room).child('participants').child(auth.uid).child('role').val() === 'detective' || root.child('rooms').child($room).child('join/detectiveUid').val() === auth.uid)"
           }
         },
